@@ -14,7 +14,7 @@ This github project is composed with 3 gits
 2. Content (Models, Materials, Sound, etc..) -> https://github.com/Mbk10201/Roleplay-CSGO--content-
 3. Configs (Plugin configs files, extensions, etc..) -> https://github.com/Mbk10201/Roleplay-CSGO--cfg-
 
-For any help contact me on discord: MBK#2443
+I dont give support to install only for questions about it contact me on discord: MBK#2443
 
 
 [Features]

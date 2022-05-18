@@ -5,7 +5,10 @@ Compiled with Sourcemod 1.11 on SPCode I.D.E,
 Here is the full folder of includes for SPCode to be downloaded before compile this project.
 -> https://github.com/Mbk10201/Roleplay-CSGO--core-/tree/main/Sourcemod_1.11_6859
 
-#This github project is composed with 3 gits
+
+For the vehicles contact or wait for the github repo to be public, the link is gonna be update here
+
+This github project is composed with 3 gits
 
 1. This
 2. Content (Models, Materials, Sound, etc..) -> https://github.com/Mbk10201/Roleplay-CSGO--content-
@@ -15,12 +18,12 @@ For any help contact me on discord: MBK#2443
 
 
 [Features]
-. Cars
-. Jobs
-. Drugs
-. 22 Jobs
-. Custom Map -> RP_OREGON (https://steamcommunity.com/sharedfiles/filedetails/?id=2587764800)
+Cars
+Jobs
+Drugs
+22 Jobs
+ustom Map -> RP_OREGON (https://steamcommunity.com/sharedfiles/filedetails/?id=2587764800)
 
 [Credits]
-. Cars -> KonLiG & LuqS
-. Alliemodders for stuffs
+Vehicles -> KonLiG & LuqS
+Alliemodders for stuffs

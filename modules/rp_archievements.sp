@@ -107,6 +107,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	CreateNative("rp_SetSuccess", Native_SetSuccess);
 	CreateNative("rp_GetSuccess", Native_GetSuccess);
+	
+	return APLRes_Success;
 }
 
 public int Native_SetSuccess(Handle plugin, int numParams) 
@@ -266,4 +268,6 @@ public Action rp_OnClientDeath(int attacker, int victim, const char[] weapon, bo
 			SQL_Request(g_DB, "UPDATE `rp_archievements_stats` SET `headshots` = '%i' WHERE steamid = '%s';", archiv_data[attacker].headshots, steamID[attacker]);		
 		}
 	}
+	
+	return Plugin_Handled;
 }	

@@ -157,6 +157,8 @@ int Native_IsClientEmoting(Handle plugin, int numParams)
 int Native_StopEmote(Handle plugin, int numParams)
 {
 	StopEmote(GetNativeCell(1));
+	
+	return 0;
 }
 
 public void OnMapStart()
@@ -793,6 +795,8 @@ void ResetCam(int client)
 Action ResetCooldown(Handle timer, any client)
 {
 	CooldownTimers[client] = null;
+	
+	return Plugin_Handled;
 }
 
 Action Menu_Dance(int client)
@@ -843,6 +847,8 @@ int MenuHandler1(Menu menu, MenuAction action, int param1, int param2)
 			delete menu;
 		}
 	}
+	
+	return 0;
 }
 
 
@@ -1004,6 +1010,8 @@ int MenuHandlerEmotes(Menu menu, MenuAction action, int client, int param2)
 			}
 		}
 	}
+	
+	return 0;
 }
 
 Action DancesMenu(int client)
@@ -1199,210 +1207,211 @@ int MenuHandlerDances(Menu menu, MenuAction action, int client, int param2)
 			}
 		}
 	}
+	
+	return 0;
 }
 
-Action RandomEmote(int i)
+void RandomEmote(int i)
 {
-					char sBuffer[32];
-					g_cvFlagEmotesMenu.GetString(sBuffer, sizeof(sBuffer));
+	char sBuffer[32];
+	g_cvFlagEmotesMenu.GetString(sBuffer, sizeof(sBuffer));
 
-					if (!CheckAdminFlags(i, ReadFlagString(sBuffer)))
-					{
-						CPrintToChat(i, "%t", "NO_EMOTES_ACCESS_FLAG");
-						return;
-					}
-					
-					int number = GetRandomInt(1, 36);
-					
-					switch (number)
-					{
-						case 1:
-						CreateEmote(i, "Emote_Fonzie_Pistol", "none", "", false);
-						case 2:
-						CreateEmote(i, "Emote_Bring_It_On", "none", "", false);
-						case 3:
-						CreateEmote(i, "Emote_ThumbsDown", "none", "", false);
-						case 4:
-						CreateEmote(i, "Emote_ThumbsUp", "none", "", false);
-						case 5:
-						CreateEmote(i, "Emote_Celebration_Loop", "", "", false);
-						case 6:
-						CreateEmote(i, "Emote_BlowKiss", "none", "", false);
-						case 7:
-						CreateEmote(i, "Emote_Calculated", "none", "", false);
-						case 8:
-						CreateEmote(i, "Emote_Confused", "none", "", false);
-						case 9:
-						CreateEmote(i, "Emote_Chug", "none", "", false);
-						case 10:
-						CreateEmote(i, "Emote_Cry", "none", "emote_cry", false);
-						case 11:
-						CreateEmote(i, "Emote_DustingOffHands", "none", "athena_emote_bandofthefort_music", true);
-						case 12:
-						CreateEmote(i, "Emote_DustOffShoulders", "none", "athena_emote_hot_music", true);
-						case 13:
-						CreateEmote(i, "Emote_Facepalm", "none", "athena_emote_facepalm_foley_01", false);
-						case 14:
-						CreateEmote(i, "Emote_Fishing", "none", "Athena_Emotes_OnTheHook_02", false);
-						case 15:
-						CreateEmote(i, "Emote_Flex", "none", "", false);
-						case 16:
-						CreateEmote(i, "Emote_golfclap", "none", "", false);
-						case 17:
-						CreateEmote(i, "Emote_HandSignals", "none", "", false);
-						case 18:
-						CreateEmote(i, "Emote_HeelClick", "none", "Emote_HeelClick", false);
-						case 19:
-						CreateEmote(i, "Emote_Hotstuff", "none", "Emote_Hotstuff", false);	
-						case 20:
-						CreateEmote(i, "Emote_IBreakYou", "none", "", false);	
-						case 21:
-						CreateEmote(i, "Emote_IHeartYou", "none", "", false);
-						case 22:
-						CreateEmote(i, "Emote_Kung-Fu_Salute", "none", "", false);
-						case 23:
-						CreateEmote(i, "Emote_Laugh", "Emote_Laugh_CT", "emote_laugh_01.mp3", false);		
-						case 24:
-						CreateEmote(i, "Emote_Luchador", "none", "Emote_Luchador", false);
-						case 25:
-						CreateEmote(i, "Emote_Make_It_Rain", "none", "athena_emote_makeitrain_music", false);
-						case 26:
-						CreateEmote(i, "Emote_NotToday", "none", "", false);	
-						case 27:
-						CreateEmote(i, "Emote_RockPaperScissor_Paper", "none", "", false);
-						case 28:
-						CreateEmote(i, "Emote_RockPaperScissor_Rock", "none", "", false);
-						case 29:
-						CreateEmote(i, "Emote_RockPaperScissor_Scissor", "none", "", false);
-						case 30:
-						CreateEmote(i, "Emote_Salt", "none", "", false);
-						case 31:
-						CreateEmote(i, "Emote_Salute", "none", "athena_emote_salute_foley_01", false);
-						case 32:
-						CreateEmote(i, "Emote_SmoothDrive", "none", "", false);
-						case 33:
-						CreateEmote(i, "Emote_Snap", "none", "Emote_Snap1", false);
-						case 34:
-						CreateEmote(i, "Emote_StageBow", "none", "emote_stagebow", false);		
-						case 35:
-						CreateEmote(i, "Emote_Wave2", "none", "", false);
-						case 36:
-						CreateEmote(i, "Emote_Yeet", "none", "Emote_Yeet", false);	
-					}	
-
+	if (!CheckAdminFlags(i, ReadFlagString(sBuffer)))
+	{
+		CPrintToChat(i, "%t", "NO_EMOTES_ACCESS_FLAG");
+		return;
+	}
+	
+	int number = GetRandomInt(1, 36);
+	
+	switch (number)
+	{
+		case 1:
+		CreateEmote(i, "Emote_Fonzie_Pistol", "none", "", false);
+		case 2:
+		CreateEmote(i, "Emote_Bring_It_On", "none", "", false);
+		case 3:
+		CreateEmote(i, "Emote_ThumbsDown", "none", "", false);
+		case 4:
+		CreateEmote(i, "Emote_ThumbsUp", "none", "", false);
+		case 5:
+		CreateEmote(i, "Emote_Celebration_Loop", "", "", false);
+		case 6:
+		CreateEmote(i, "Emote_BlowKiss", "none", "", false);
+		case 7:
+		CreateEmote(i, "Emote_Calculated", "none", "", false);
+		case 8:
+		CreateEmote(i, "Emote_Confused", "none", "", false);
+		case 9:
+		CreateEmote(i, "Emote_Chug", "none", "", false);
+		case 10:
+		CreateEmote(i, "Emote_Cry", "none", "emote_cry", false);
+		case 11:
+		CreateEmote(i, "Emote_DustingOffHands", "none", "athena_emote_bandofthefort_music", true);
+		case 12:
+		CreateEmote(i, "Emote_DustOffShoulders", "none", "athena_emote_hot_music", true);
+		case 13:
+		CreateEmote(i, "Emote_Facepalm", "none", "athena_emote_facepalm_foley_01", false);
+		case 14:
+		CreateEmote(i, "Emote_Fishing", "none", "Athena_Emotes_OnTheHook_02", false);
+		case 15:
+		CreateEmote(i, "Emote_Flex", "none", "", false);
+		case 16:
+		CreateEmote(i, "Emote_golfclap", "none", "", false);
+		case 17:
+		CreateEmote(i, "Emote_HandSignals", "none", "", false);
+		case 18:
+		CreateEmote(i, "Emote_HeelClick", "none", "Emote_HeelClick", false);
+		case 19:
+		CreateEmote(i, "Emote_Hotstuff", "none", "Emote_Hotstuff", false);	
+		case 20:
+		CreateEmote(i, "Emote_IBreakYou", "none", "", false);	
+		case 21:
+		CreateEmote(i, "Emote_IHeartYou", "none", "", false);
+		case 22:
+		CreateEmote(i, "Emote_Kung-Fu_Salute", "none", "", false);
+		case 23:
+		CreateEmote(i, "Emote_Laugh", "Emote_Laugh_CT", "emote_laugh_01.mp3", false);		
+		case 24:
+		CreateEmote(i, "Emote_Luchador", "none", "Emote_Luchador", false);
+		case 25:
+		CreateEmote(i, "Emote_Make_It_Rain", "none", "athena_emote_makeitrain_music", false);
+		case 26:
+		CreateEmote(i, "Emote_NotToday", "none", "", false);	
+		case 27:
+		CreateEmote(i, "Emote_RockPaperScissor_Paper", "none", "", false);
+		case 28:
+		CreateEmote(i, "Emote_RockPaperScissor_Rock", "none", "", false);
+		case 29:
+		CreateEmote(i, "Emote_RockPaperScissor_Scissor", "none", "", false);
+		case 30:
+		CreateEmote(i, "Emote_Salt", "none", "", false);
+		case 31:
+		CreateEmote(i, "Emote_Salute", "none", "athena_emote_salute_foley_01", false);
+		case 32:
+		CreateEmote(i, "Emote_SmoothDrive", "none", "", false);
+		case 33:
+		CreateEmote(i, "Emote_Snap", "none", "Emote_Snap1", false);
+		case 34:
+		CreateEmote(i, "Emote_StageBow", "none", "emote_stagebow", false);		
+		case 35:
+		CreateEmote(i, "Emote_Wave2", "none", "", false);
+		case 36:
+		CreateEmote(i, "Emote_Yeet", "none", "Emote_Yeet", false);	
+	}	
 }
 
-Action RandomDance(int i)
+void RandomDance(int i)
 {
-					char sBuffer[32];
-					g_cvFlagDancesMenu.GetString(sBuffer, sizeof(sBuffer));
+	char sBuffer[32];
+	g_cvFlagDancesMenu.GetString(sBuffer, sizeof(sBuffer));
 
-					if (!CheckAdminFlags(i, ReadFlagString(sBuffer)))
-					{
-						CPrintToChat(i, "%t", "NO_DANCES_ACCESS_FLAG");
-						return;
-					}
-					int number = GetRandomInt(1, 48);
-					
-					switch (number)
-					{
-						case 1:
-						CreateEmote(i, "DanceMoves", "none", "ninja_dance_01", false);
-						case 2:
-						CreateEmote(i, "Emote_Mask_Off_Intro", "Emote_Mask_Off_Loop", "Hip_Hop_Good_Vibes_Mix_01_Loop", true);						
-						case 3:
-						CreateEmote(i, "Emote_Zippy_Dance", "none", "emote_zippy_A", true);
-						case 4:
-						CreateEmote(i, "ElectroShuffle", "none", "athena_emote_electroshuffle_music", true);
-						case 5:
-						CreateEmote(i, "Emote_AerobicChamp", "none", "emote_aerobics_01", true);
-						case 6:
-						CreateEmote(i, "Emote_Bendy", "none", "athena_music_emotes_bendy", true);
-						case 7:
-						CreateEmote(i, "Emote_BandOfTheFort", "none", "athena_emote_bandofthefort_music", true);	
-						case 8:
-						CreateEmote(i, "Emote_Boogie_Down_Intro", "Emote_Boogie_Down", "emote_boogiedown", true);	
-						case 9:
-						CreateEmote(i, "Emote_Capoeira", "none", "emote_capoeira", false);
-						case 10:
-						CreateEmote(i, "Emote_Charleston", "none", "athena_emote_flapper_music", true);
-						case 11:
-						CreateEmote(i, "Emote_Chicken", "none", "athena_emote_chicken_foley_01", true);
-						case 12:
-						CreateEmote(i, "Emote_Dance_NoBones", "none", "athena_emote_music_boneless", true);
-						case 13:
-						CreateEmote(i, "Emote_Dance_Shoot", "none", "athena_emotes_music_shoot_v7", true);
-						case 14:
-						CreateEmote(i, "Emote_Dance_SwipeIt", "none", "Athena_Emotes_Music_SwipeIt", true);
-						case 15:
-						CreateEmote(i, "Emote_Dance_Disco_T3", "none", "athena_emote_disco", true);
-						case 16:
-						CreateEmote(i, "Emote_DG_Disco", "none", "athena_emote_disco", true); 					
-						case 17:
-						CreateEmote(i, "Emote_Dance_Worm", "none", "athena_emote_worm_music", false);
-						case 18:
-						CreateEmote(i, "Emote_Dance_Loser", "Emote_Dance_Loser_CT", "athena_music_emotes_takethel", true);
-						case 19:
-						CreateEmote(i, "Emote_Dance_Breakdance", "none", "athena_emote_breakdance_music", false);
-						case 20:
-						CreateEmote(i, "Emote_Dance_Pump", "none", "Emote_Dance_Pump", true);
-						case 21:
-						CreateEmote(i, "Emote_Dance_RideThePony", "none", "athena_emote_ridethepony_music_01", false);
-						case 22:
-						CreateEmote(i, "Emote_Dab", "none", "", false);
-						case 23:
-						CreateEmote(i, "Emote_EasternBloc_Start", "Emote_EasternBloc", "eastern_bloc_musc_setup_d", true);
-						case 24:
-						CreateEmote(i, "Emote_FancyFeet", "Emote_FancyFeet_CT", "athena_emotes_lankylegs_loop_02", true); 
-						case 25:
-						CreateEmote(i, "Emote_FlossDance", "none", "athena_emote_floss_music", true);
-						case 26:
-						CreateEmote(i, "Emote_FlippnSexy", "none", "Emote_FlippnSexy", false);
-						case 27:
-						CreateEmote(i, "Emote_Fresh", "none", "athena_emote_fresh_music", true);
-						case 28:
-						CreateEmote(i, "Emote_GrooveJam", "none", "emote_groove_jam_a", true);	
-						case 29:
-						CreateEmote(i, "Emote_guitar", "none", "br_emote_shred_guitar_mix_03_loop", true);	
-						case 30:
-						CreateEmote(i, "Emote_Hillbilly_Shuffle_Intro", "Emote_Hillbilly_Shuffle", "Emote_Hillbilly_Shuffle", true); 
-						case 31:
-						CreateEmote(i, "Emote_Hiphop_01", "Emote_Hip_Hop", "s5_hiphop_breakin_132bmp_loop", true);	
-						case 32:
-						CreateEmote(i, "Emote_Hula_Start", "Emote_Hula", "emote_hula_01", true);
-						case 33:
-						CreateEmote(i, "Emote_InfiniDab_Intro", "Emote_InfiniDab_Loop", "athena_emote_infinidab", true);	
-						case 34:
-						CreateEmote(i, "Emote_Intensity_Start", "Emote_Intensity_Loop", "emote_Intensity", true);
-						case 35:
-						CreateEmote(i, "Emote_IrishJig_Start", "Emote_IrishJig", "emote_irish_jig_foley_music_loop", true);
-						case 36:
-						CreateEmote(i, "Emote_KoreanEagle", "none", "Athena_Music_Emotes_KoreanEagle", true);
-						case 37:
-						CreateEmote(i, "Emote_Kpop_02", "none", "emote_kpop_01", true);	
-						case 38:
-						CreateEmote(i, "Emote_LivingLarge", "none", "emote_LivingLarge_A", true);	
-						case 39:
-						CreateEmote(i, "Emote_Maracas", "none", "emote_samba_new_B", true);
-						case 40:
-						CreateEmote(i, "Emote_PopLock", "none", "Athena_Emote_PopLock", true);
-						case 41:
-						CreateEmote(i, "Emote_PopRock", "none", "Emote_PopRock_01", true);		
-						case 42:
-						CreateEmote(i, "Emote_RobotDance", "none", "athena_emote_robot_music", true);	
-						case 43:
-						CreateEmote(i, "Emote_T-Rex", "none", "Emote_Dino_Complete", false);
-						case 44:
-						CreateEmote(i, "Emote_TechnoZombie", "none", "athena_emote_founders_music", true);		
-						case 45:
-						CreateEmote(i, "Emote_Twist", "none", "athena_emotes_music_twist", true);
-						case 46:
-						CreateEmote(i, "Emote_WarehouseDance_Start", "Emote_WarehouseDance_Loop", "Emote_Warehouse", true);
-						case 47:
-						CreateEmote(i, "Emote_Wiggle", "none", "Wiggle_Music_Loop", true);
-						case 48:
-						CreateEmote(i, "Emote_Youre_Awesome", "none", "youre_awesome_emote_music", false);	
-					}	
+	if (!CheckAdminFlags(i, ReadFlagString(sBuffer)))
+	{
+		CPrintToChat(i, "%t", "NO_DANCES_ACCESS_FLAG");
+		return;
+	}
+	int number = GetRandomInt(1, 48);
+	
+	switch (number)
+	{
+		case 1:
+		CreateEmote(i, "DanceMoves", "none", "ninja_dance_01", false);
+		case 2:
+		CreateEmote(i, "Emote_Mask_Off_Intro", "Emote_Mask_Off_Loop", "Hip_Hop_Good_Vibes_Mix_01_Loop", true);						
+		case 3:
+		CreateEmote(i, "Emote_Zippy_Dance", "none", "emote_zippy_A", true);
+		case 4:
+		CreateEmote(i, "ElectroShuffle", "none", "athena_emote_electroshuffle_music", true);
+		case 5:
+		CreateEmote(i, "Emote_AerobicChamp", "none", "emote_aerobics_01", true);
+		case 6:
+		CreateEmote(i, "Emote_Bendy", "none", "athena_music_emotes_bendy", true);
+		case 7:
+		CreateEmote(i, "Emote_BandOfTheFort", "none", "athena_emote_bandofthefort_music", true);	
+		case 8:
+		CreateEmote(i, "Emote_Boogie_Down_Intro", "Emote_Boogie_Down", "emote_boogiedown", true);	
+		case 9:
+		CreateEmote(i, "Emote_Capoeira", "none", "emote_capoeira", false);
+		case 10:
+		CreateEmote(i, "Emote_Charleston", "none", "athena_emote_flapper_music", true);
+		case 11:
+		CreateEmote(i, "Emote_Chicken", "none", "athena_emote_chicken_foley_01", true);
+		case 12:
+		CreateEmote(i, "Emote_Dance_NoBones", "none", "athena_emote_music_boneless", true);
+		case 13:
+		CreateEmote(i, "Emote_Dance_Shoot", "none", "athena_emotes_music_shoot_v7", true);
+		case 14:
+		CreateEmote(i, "Emote_Dance_SwipeIt", "none", "Athena_Emotes_Music_SwipeIt", true);
+		case 15:
+		CreateEmote(i, "Emote_Dance_Disco_T3", "none", "athena_emote_disco", true);
+		case 16:
+		CreateEmote(i, "Emote_DG_Disco", "none", "athena_emote_disco", true); 					
+		case 17:
+		CreateEmote(i, "Emote_Dance_Worm", "none", "athena_emote_worm_music", false);
+		case 18:
+		CreateEmote(i, "Emote_Dance_Loser", "Emote_Dance_Loser_CT", "athena_music_emotes_takethel", true);
+		case 19:
+		CreateEmote(i, "Emote_Dance_Breakdance", "none", "athena_emote_breakdance_music", false);
+		case 20:
+		CreateEmote(i, "Emote_Dance_Pump", "none", "Emote_Dance_Pump", true);
+		case 21:
+		CreateEmote(i, "Emote_Dance_RideThePony", "none", "athena_emote_ridethepony_music_01", false);
+		case 22:
+		CreateEmote(i, "Emote_Dab", "none", "", false);
+		case 23:
+		CreateEmote(i, "Emote_EasternBloc_Start", "Emote_EasternBloc", "eastern_bloc_musc_setup_d", true);
+		case 24:
+		CreateEmote(i, "Emote_FancyFeet", "Emote_FancyFeet_CT", "athena_emotes_lankylegs_loop_02", true); 
+		case 25:
+		CreateEmote(i, "Emote_FlossDance", "none", "athena_emote_floss_music", true);
+		case 26:
+		CreateEmote(i, "Emote_FlippnSexy", "none", "Emote_FlippnSexy", false);
+		case 27:
+		CreateEmote(i, "Emote_Fresh", "none", "athena_emote_fresh_music", true);
+		case 28:
+		CreateEmote(i, "Emote_GrooveJam", "none", "emote_groove_jam_a", true);	
+		case 29:
+		CreateEmote(i, "Emote_guitar", "none", "br_emote_shred_guitar_mix_03_loop", true);	
+		case 30:
+		CreateEmote(i, "Emote_Hillbilly_Shuffle_Intro", "Emote_Hillbilly_Shuffle", "Emote_Hillbilly_Shuffle", true); 
+		case 31:
+		CreateEmote(i, "Emote_Hiphop_01", "Emote_Hip_Hop", "s5_hiphop_breakin_132bmp_loop", true);	
+		case 32:
+		CreateEmote(i, "Emote_Hula_Start", "Emote_Hula", "emote_hula_01", true);
+		case 33:
+		CreateEmote(i, "Emote_InfiniDab_Intro", "Emote_InfiniDab_Loop", "athena_emote_infinidab", true);	
+		case 34:
+		CreateEmote(i, "Emote_Intensity_Start", "Emote_Intensity_Loop", "emote_Intensity", true);
+		case 35:
+		CreateEmote(i, "Emote_IrishJig_Start", "Emote_IrishJig", "emote_irish_jig_foley_music_loop", true);
+		case 36:
+		CreateEmote(i, "Emote_KoreanEagle", "none", "Athena_Music_Emotes_KoreanEagle", true);
+		case 37:
+		CreateEmote(i, "Emote_Kpop_02", "none", "emote_kpop_01", true);	
+		case 38:
+		CreateEmote(i, "Emote_LivingLarge", "none", "emote_LivingLarge_A", true);	
+		case 39:
+		CreateEmote(i, "Emote_Maracas", "none", "emote_samba_new_B", true);
+		case 40:
+		CreateEmote(i, "Emote_PopLock", "none", "Athena_Emote_PopLock", true);
+		case 41:
+		CreateEmote(i, "Emote_PopRock", "none", "Emote_PopRock_01", true);		
+		case 42:
+		CreateEmote(i, "Emote_RobotDance", "none", "athena_emote_robot_music", true);	
+		case 43:
+		CreateEmote(i, "Emote_T-Rex", "none", "Emote_Dino_Complete", false);
+		case 44:
+		CreateEmote(i, "Emote_TechnoZombie", "none", "athena_emote_founders_music", true);		
+		case 45:
+		CreateEmote(i, "Emote_Twist", "none", "athena_emotes_music_twist", true);
+		case 46:
+		CreateEmote(i, "Emote_WarehouseDance_Start", "Emote_WarehouseDance_Loop", "Emote_Warehouse", true);
+		case 47:
+		CreateEmote(i, "Emote_Wiggle", "none", "Wiggle_Music_Loop", true);
+		case 48:
+		CreateEmote(i, "Emote_Youre_Awesome", "none", "youre_awesome_emote_music", false);	
+	}
 }
 
 

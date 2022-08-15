@@ -748,4 +748,6 @@ public int eventMariage(Menu menu, MenuAction action, int client, int param)
 		if(action == MenuAction_End)
 			delete menu;
 	}
+	
+	return 0;
 }

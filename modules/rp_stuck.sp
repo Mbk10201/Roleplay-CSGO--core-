@@ -133,7 +133,7 @@ public Action Command_Stuck(int client, int args)
 public Action Timer_Cooldown(Handle timer, int client)
 {
 	iData[client].canUse = true;
-		
+	return Plugin_Handled;
 }
 
 void StartStuckDetection(int client)
@@ -226,6 +226,8 @@ public Action TimerWait(Handle timer, DataPack pack)
 		else
 			PrintToChat(client, "[!stuck] Done!", StuckCheck[client]);
 	}
+	
+	return Plugin_Handled;
 }
 
 

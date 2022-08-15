@@ -273,7 +273,7 @@ public Action Cmd_VehicleScript(int client, int args)
 	char sArg[128];
 	GetCmdArg(1, STRING(sArg));
 	
-	int iVehicle = GetClientVehicle(client);
+	int iVehicle = Vehicles_GetClientVehicleEntity(client);
 	
 	if(!Vehicle_IsValid(iVehicle))
 		return Plugin_Handled;

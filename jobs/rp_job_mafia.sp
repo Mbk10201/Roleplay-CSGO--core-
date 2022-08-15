@@ -10,6 +10,8 @@
 *   https://enemy-down.eu - benitalpa1020@gmail.com
 */
 
+#warning PLEASE NOTE, This plugin need to be finished
+
 /***************************************************************************************
 
 							C O M P I L E  -  O P T I O N S
@@ -61,7 +63,7 @@ public void OnPluginStart()
 	LoadTranslation();
 }
 
-public Action RP_OnClientInteract(int client, int target, const char[] class, const char[] model, const char[] name)
+/*public Action RP_OnClientInteract(int client, int target, const char[] class, const char[] model, const char[] name)
 {
 	if(rp_GetNPCType(target) == JOBID)
 	{
@@ -70,7 +72,7 @@ public Action RP_OnClientInteract(int client, int target, const char[] class, co
 		else
 			Translation_PrintTooFar(client);
 	}	
-}	
+}	*/
 
 Menu Coffre(int client)
 {	
@@ -136,4 +138,6 @@ public int DoMenuCoffre(Menu menu, MenuAction action, int client, int param)
 	}
 	else if(action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }

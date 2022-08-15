@@ -18,6 +18,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#warning PLEASE NOTE, This plugin need to be finished
+
 /***************************************************************************************
 
 							P L U G I N  -  I N C L U D E S

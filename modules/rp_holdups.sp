@@ -413,6 +413,8 @@ public Action Timer_Holdup_Refresh(Handle timer)
 	char Translation[64];
 	Format(STRING(Translation), "%T", "Holdup_Refresh", LANG_SERVER);
 	CPrintToChatAll("%s %s", Translation);
+	
+	return Plugin_Handled;
 }
 
 void attachMask(int client) 

@@ -290,7 +290,7 @@ public Action Hud_Display(Handle timer, int client)
 		
 		if(rp_GetClientBool(client, b_DisplayHud))
 		{
-			if(GetClientVehicle(client) == -1)
+			if(Vehicles_GetClientVehicleEntity(client) == -1)
 			{
 				char symbol[6];
 				int number = GetRandomInt(0, 7);
@@ -517,7 +517,7 @@ public Action Hud_Display(Handle timer, int client)
 			else
 			{
 				char translation[64];
-				int car = GetClientVehicle(client);
+				int car = Vehicles_GetClientVehicleEntity(client);
 				
 				VehicleType vehicle_type;
 				Vehicles_GetVehicleTypeOfVehicle(car, vehicle_type);

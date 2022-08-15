@@ -81,6 +81,7 @@
 //#include <vphysics>
 #include <collisionhook>
 #include <vehicles>
+#include <autoexecconfig>
 
 #include "roleplay_csgo/enumeration.inc"
 #include "roleplay_csgo/forwards.inc"

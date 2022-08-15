@@ -9,6 +9,10 @@
 
 #include <roleplay_csgo>
 
+#warning TO BE FINISHED
+#warning TO BE FINISHED
+#warning TO BE FINISHED
+
 #pragma newdecls required
 #pragma semicolon 1
 

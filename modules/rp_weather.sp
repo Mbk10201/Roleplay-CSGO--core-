@@ -15,6 +15,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#warning TO BE FINISHED
+#warning TO BE FINISHED
+#warning TO BE FINISHED
+
 #define PLUGIN_NAME 	"Weather"
 #define PARTICLE_FOG	"storm_cloud_parent"
 #define	MAX_FOG			16

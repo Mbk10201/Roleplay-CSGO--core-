@@ -539,10 +539,8 @@ public int Handle_SellConfirm(Menu menu, MenuAction action, int client, int para
 		int price = StringToInt(buffer[3]);
 		bool bankCard = view_as<bool>(StringToInt(buffer[4]));
 		bool car = false;
-		if(StrEqual(buffer[5], "car"))
-			car = true;
 		
-		Request_Sell(client, seller, itemID, price, quantity, bankCard, car);
+		Request_Sell(client, seller, itemID, price, quantity, bankCard);
 	}
 	else if(action == MenuAction_Cancel)
 	{
@@ -567,10 +565,7 @@ void Request_Sell(int buyer, int seller, int itemID, int price, int quantity, bo
 	Call_Finish();
 
 	char item[32];
-	if(car)
-		GetVehicleName(itemID, STRING(item));
-	else
-		rp_GetItemData(itemID, item_name, STRING(item));				
+	rp_GetItemData(itemID, item_name, STRING(item));				
 	
 	if (payCB && rp_GetClientInt(buyer, i_Bank) >= price || !payCB && rp_GetClientInt(buyer, i_Money) >= price)
 	{

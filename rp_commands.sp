@@ -285,7 +285,7 @@ public Action Command_Grab(int client, int args)
 		return Plugin_Handled;
 	}
 	
-	if (GetClientVehicle(client) != -1)
+	if (Vehicles_GetClientVehicleEntity(client) != -1)
 		return Plugin_Handled;
 	
 	char entClass[64];

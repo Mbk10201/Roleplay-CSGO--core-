@@ -27,8 +27,8 @@
 
 char loadingbar[MAXPLAYERS + 1][64];
 float cooldown[MAXPLAYERS + 1];
-Handle Timer_LoadingBar[MAXPLAYERS + 1] = null;
-LOADING_TYPE type_loading[MAXPLAYERS + 1] = LOADING_HUDMSG;
+Handle Timer_LoadingBar[MAXPLAYERS + 1] = { null, ... };
+LOADING_TYPE type_loading[MAXPLAYERS + 1] = { LOADING_HUDMSG, ... };
 /***************************************************************************************
 
 							P L U G I N  -  I N F O
@@ -57,6 +57,8 @@ public APLRes AskPluginLoad2(Handle plugin, bool late, char[] error, int err_max
 {
 	RegPluginLibrary("rp_loadingbar");
 	CreateNative("rp_PerformLoadingBar", Native_PerformLoadingBar);
+	
+	return APLRes_Success;
 }
 
 public int Native_PerformLoadingBar(Handle plugin, int numParams) 
@@ -68,14 +70,14 @@ public int Native_PerformLoadingBar(Handle plugin, int numParams)
 	int maxcubes = GetNativeCell(4);
 	
 	if(!IsClientValid(client))
-		return;
+		return -1;
 	
 	/*if(Timer_LoadingBar[client] != null)
 		return;*/
 	
 	LoadingBar(client, message, maxcubes);
 	
-	return;
+	return 0;
 }
 
 /***************************************************************************************

@@ -21,6 +21,7 @@
 
 ***************************************************************************************/
 #include <roleplay_csgo.inc>
+#include <discord>
 
 enum struct CvarData {
 	ConVar footericon;
@@ -86,10 +87,11 @@ public Action Timer_AnnounceDiscord(Handle timer)
 		Embed.SetTitle("ENEMY-DOWN 🧠");
 		Embed.SetTitleLink("https://enemy-down.eu/");
 		
-		char sz_Players[64], sz_Map[128], sz_Link[128], sz_Time[64];
+		char sz_Players[64], sz_Map[128], sz_Link[128], sz_Time[64], sz_Connect[64];
 		Format(STRING(sz_Players), "%i/%i", GetRealClientCount(), GetMaxHumanPlayers());
 		rp_GetCurrentMap(STRING(sz_Map));
-		Format(STRING(sz_Link), "steam://connect/%s", GetServerAdress());
+		GetServerAdress(sz_Connect, sizeof(sz_Connect));
+		Format(STRING(sz_Link), "steam://connect/%s", sz_Connect);
 		char monthname[32];
 		GetMonthName(rp_GetTime(i_month), STRING(monthname));
 		Format(STRING(sz_Time), "%i%i:%i%i %i %s %i", rp_GetTime(i_hour1), rp_GetTime(i_hour2), rp_GetTime(i_minute1), rp_GetTime(i_minute2), rp_GetTime(i_day), monthname, rp_GetTime(i_year));
@@ -124,6 +126,8 @@ public Action Timer_AnnounceDiscord(Handle timer)
 		hook.Send();
 		delete hook;
 	}	
+	
+	return Plugin_Handled;
 }
 
 public void OnClientAuthorized(int client, const char[] auth) 
@@ -149,6 +153,8 @@ public int Native_LogToDiscord(Handle plugin, int numParams)
 	char message[256];
 	GetNativeString(1, STRING(message));	
 	Discord_Quest(STRING(message));
+	
+	return 0;
 }
 
 /***************************************************************************************
@@ -157,19 +163,19 @@ public int Native_LogToDiscord(Handle plugin, int numParams)
 
 ***************************************************************************************/
 
-public Action RP_OnClientSay(int client, const char[] arg)
+public void RP_OnClientSay(int client, const char[] arg)
 {
 	if(StrContains(arg, "@everyone", false) != -1 || StrContains(arg, "@here", false) != -1 && rp_GetAdmin(client) == ADMIN_FLAG_NONE)
 	{
 		rp_PrintToChat(client, "Vous n'avez pas accès au @everyone");
-		return Plugin_Handled;
+		return;
 	}
 	
 	char message[256];
 	Format(STRING(message), "%N: %s", client, arg);	
 	Discord_Quest(STRING(message));
 	
-	return Plugin_Continue;
+	return;
 }
 
 void Discord_Quest(char[] message, int maxlength) 
@@ -246,18 +252,15 @@ static stock int GetRealClientCount()
 	return count;
 }
 
-static stock char GetServerAdress()
+void GetServerAdress(char[] buffer, int maxlen)
 {
-	char sAddress[64];
 	int ip[4];
 	SteamWorks_GetPublicIP(ip);
-	if(SteamWorks_GetPublicIP(ip)) Format(sAddress, sizeof sAddress, "%d.%d.%d.%d:%d", ip[0], ip[1], ip[2], ip[3], FindConVar("hostport").IntValue);
+	if(SteamWorks_GetPublicIP(ip)) Format(buffer, maxlen, "%d.%d.%d.%d:%d", ip[0], ip[1], ip[2], ip[3], FindConVar("hostport").IntValue);
 	else {
 		int iIPB = FindConVar("hostip").IntValue;
-		Format(sAddress, sizeof sAddress, "%d.%d.%d.%d:%d", iIPB >> 24 & 0x000000FF, iIPB >> 16 & 0x000000FF, iIPB >> 8 & 0x000000FF, iIPB & 0x000000FF, FindConVar("hostport").IntValue);
+		Format(buffer, maxlen, "%d.%d.%d.%d:%d", iIPB >> 24 & 0x000000FF, iIPB >> 16 & 0x000000FF, iIPB >> 8 & 0x000000FF, iIPB & 0x000000FF, FindConVar("hostport").IntValue);
 	}
-
-	return sAddress;
 }
 
 /***************************************************************************************

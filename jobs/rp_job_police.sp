@@ -57,7 +57,7 @@ char
 	steamID[MAXPLAYERS + 1][32],
 	lastModel[MAXPLAYERS + 1][128];
 bool 
-	canTase[MAXPLAYERS + 1] = true,
+	canTase[MAXPLAYERS + 1] = {true, ... },
 	canSwitchTeam[MAXPLAYERS + 1] =  { true, ... };
 float 
 	g_flLastPos[MAXPLAYERS + 1][3];
@@ -182,6 +182,8 @@ public APLRes AskPluginLoad2(Handle plugin, bool late, char[] error, int err_max
 {
 	RegPluginLibrary("rp_job_police");
 	CreateNative("rp_GetRaisonName", Native_GetRaisonName);
+	
+	return APLRes_Success;
 }
 public int Native_GetRaisonName(Handle plugin, int numParams) 
 {
@@ -332,27 +334,31 @@ public Action Cmd_Cops(int client, int args)
 		rp_PrintToChat(client, "Vous n'avez pas accès à cette commande.");
 	}	
 		
-	return Plugin_Handled;	
+	return Plugin_Handled;
 }
 
 public Action EnableSwitchTeam(Handle timer, any client)
 {
 	if(IsClientValid(client))
 		canSwitchTeam[client] = true;
+		
+	return Plugin_Handled;
 }	
 
 public Action ResetTaser(Handle timer, any client)
 {
 	if(IsClientValid(client))
 		canTase[client] = true;
-}	
+		
+	return Plugin_Handled;
+}
 
 public Action Command_Taser(int client, int args)
 {
 	if(rp_GetClientInt(client, i_Zone) == 777)
 	{
 		rp_PrintToChat(client, "Le taser est interdit en zone PVP.");
-		return;
+		return Plugin_Handled;
 	}
 	
 	int aim = GetClientAimTarget(client, false);
@@ -371,7 +377,7 @@ public Action Command_Taser(int client, int args)
 	else if(rp_GetClientInt(client, i_Grade) == 5 && Distance(client, aim) <= 900)
 		time = 6.0;
 	else 
-		return;
+		return Plugin_Handled;
 	
 	canTase[client] = false;
 	CreateTimer(time, ResetTaser, client);
@@ -436,12 +442,12 @@ public Action Command_Taser(int client, int args)
 			else if(StrContains(entClass, "door") != -1)
 			{
 				rp_PrintToChat(client, "Vous devez utiliser le taser sur une entité.");
-				return;
+				return Plugin_Handled;
 			}
 			else if(StrContains(entClass, "vehicle") != -1)
 			{
 				rp_PrintToChat(client, "Vous devez utiliser le taser sur une entité.");
-				return;
+				return Plugin_Handled;
 			}
 				
 			int reward;
@@ -461,7 +467,7 @@ public Action Command_Taser(int client, int args)
 		}
 	}
 	
-	return;
+	return Plugin_Handled;
 }
 
 void Tase(int client, int target, float time)
@@ -492,7 +498,7 @@ void Tase(int client, int target, float time)
 	LogToGame("[TAZER] %L a tazé %N dans %d.", client, target, rp_GetClientInt(client, i_Zone));
 }
 
-int TE_Taser(int client, int target)
+void TE_Taser(int client, int target)
 {
 	if(IsValidEntity(client) && IsValidEntity(target))
 	{
@@ -541,26 +547,30 @@ public Action UnTase(Handle timer, any client)
 		SetEntityRenderMode(client, RENDER_TRANSCOLOR);
 		rp_SetDefaultClientColor(client);
 		
-		CreateTimer(5.0, ResetIsTased, client);
+		CreateTimer(5.0, Timer_ResetIsTased, client);
 	}
+	
+	return Plugin_Handled;
 }
 
-public Action ResetIsTased(Handle timer, any client)
+public Action Timer_ResetIsTased(Handle timer, any client)
 {
 	if(IsClientValid(client))
 	{
 		rp_SetClientBool(client, b_IsTased, false);
 		rp_SetClientBool(client, b_CanUseItem, true);
 	}	
+	
+	return Plugin_Handled;
 }
 
-public Action RP_OnClientTakeDamage(int client, int attacker, int inflictor, float &damage, int damagetype)
+public void RP_OnClientTakeDamage(int client, int attacker, int inflictor, float &damage, int damagetype)
 {
 	if(rp_GetClientInt(client, i_LastAgression) != 0)
 	{
 		rp_SetClientInt(attacker, i_LastAgression, client);
 		CreateTimer(600.0, ResetData, attacker);
-	}	
+	}
 }	
 
 public void RP_OnPlayerDeath(int attacker, int victim, int respawnTime)
@@ -651,10 +661,12 @@ public Action ResetData(Handle timer, any client)
 		rp_SetClientInt(client, i_LastVolAmount, 0);
 		
 	if(rp_GetClientInt(client, i_LastVolTarget) >= 1)
-		rp_SetClientInt(client, i_LastVolTarget, 0);	
+		rp_SetClientInt(client, i_LastVolTarget, 0);
+
+	return Plugin_Handled;
 }
 
-public Action RP_OnClientInteract(int client, int target, const char[] class, const char[] model, const char[] name)
+public void RP_OnClientInteract(int client, int target, const char[] class, const char[] model, const char[] name)
 {
 	if(rp_GetNPCType(target) == JOBID)
 	{
@@ -670,10 +682,10 @@ public Action RP_OnClientInteract(int client, int target, const char[] class, co
 			i_EditProp[client] = target;
 			MenuEdit(client);
 		}	
-	}	
+	}
 }
 
-Menu MenuEdit(int client)
+void MenuEdit(int client)
 {
 	rp_SetClientBool(client, b_DisplayHud, false);
 	Menu menu = new Menu(Handle_MenuEdit);
@@ -714,6 +726,8 @@ public int Handle_MenuEdit(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public void Menu_Position(int client) 
@@ -811,6 +825,8 @@ public int Handle_Position(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public void Menu_Angles(int client) 
@@ -837,7 +853,7 @@ public int Handle_Angles(Menu menu, MenuAction action, int client, int param)
 		float angles[3];
 		char npcUniqueId[128];
 		if (i_EditProp[client] == -1)
-			return;
+			return -1;
 		GetEntPropString(i_EditProp[client], Prop_Data, "m_iName", STRING(npcUniqueId));
 		
 		if (StrEqual(info, "plus")) 
@@ -879,9 +895,11 @@ public int Handle_Angles(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
-public Action RP_OnPlayerInteract(int client, int target, const char[] class, const char[] model, const char[] name)
+public void RP_OnPlayerInteract(int client, int target, const char[] class, const char[] model, const char[] name)
 {
 	/*if (StrEqual(model, "models/props_interiors/paper_tray.mdl") && rp_GetClientInt(client, i_Job) == 1 || rp_GetClientInt(client, i_Job) == JOBID)
 	{
@@ -918,7 +936,7 @@ public Action RP_OnPlayerInteract(int client, int target, const char[] class, co
 	}	*/
 }	
 
-Menu MenuArmory(int client)
+void MenuArmory(int client)
 {
 	rp_SetClientBool(client, b_DisplayHud, false);
 	Menu menu = new Menu(Handle_MenuArmory);
@@ -999,6 +1017,8 @@ public int Handle_MenuArmory(Menu menu, MenuAction action, int client, int param
 	}
 	else if(action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public Action Cmd_Jail(int client, int args) 
@@ -1163,6 +1183,8 @@ public int Handle_ChoiseJail(Menu menu, MenuAction action, int client, int param
 		rp_SetClientBool(client, b_DisplayHud, true);
 		delete menu;
 	}
+	
+	return 0;
 }	
 
 void StripWeapons(int client) {
@@ -1186,7 +1208,7 @@ void StripWeapons(int client) {
 	FakeClientCommand(client, "use weapon_knife");
 }
 
-int MenuPeine(int client, int target, int jailid)
+void MenuPeine(int client, int target, int jailid)
 {
 	rp_SetClientBool(client, b_DisplayHud, false);
 	
@@ -1433,6 +1455,8 @@ public int Handle_SetJailTime(Menu menu, MenuAction action, int client, int para
 	else if (action == MenuAction_End) {
 		delete menu;
 	}
+	
+	return 0;
 }
 
 void WantPayForLeaving(int client, int police, int type, int amende) 
@@ -1466,7 +1490,7 @@ public int Handle_PayForLeaving(Menu menu, MenuAction action, int client, int pa
 		int jobID = rp_GetClientInt(target, i_Job);
 		
 		if (target == 0 && type == 0 && amende == 0)
-			return;
+			return -1;
 		
 		if(rp_GetClientInt(client, i_Money) >= amende)
 		{		
@@ -1500,6 +1524,8 @@ public int Handle_PayForLeaving(Menu menu, MenuAction action, int client, int pa
 	}
 	else if(action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public void RP_OnClientJob(Menu menu, int client)
@@ -1519,7 +1545,7 @@ public void RP_OnClientJob(Menu menu, int client)
 	}
 }	
 
-public int RP_OnClientJobHandle(int client, const char[] info)
+public void RP_OnClientJobHandle(int client, const char[] info)
 {
 	if (StrEqual(info, "police"))
 		MenuParamPolice(client);
@@ -1549,7 +1575,7 @@ public int RP_OnClientJobHandle(int client, const char[] info)
 	}	*/
 }	
 
-Menu MenuParamPolice(int client)
+void MenuParamPolice(int client)
 {
 	rp_SetClientBool(client, b_DisplayHud, false);
 	Menu menu = new Menu(Handle_MenuParamPolice);
@@ -1641,6 +1667,8 @@ public int Handle_MenuParamPolice(Menu menu, MenuAction action, int client, int 
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public int Handle_MenuSelectParamPolice(Menu menu1, MenuAction action, int client, int param)
@@ -1711,9 +1739,11 @@ public int Handle_MenuSelectParamPolice(Menu menu1, MenuAction action, int clien
 	}
 	else if (action == MenuAction_End)
 		delete menu1;
+		
+	return 0;
 }
 
-Menu MenuEnquete(int client)
+void MenuEnquete(int client)
 {
 	rp_SetClientBool(client, b_DisplayHud, false);
 	Menu menu = new Menu(DoMenuEnquete);
@@ -1767,6 +1797,8 @@ public int DoMenuEnquete(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public int DoMenuEnqueteFinal(Menu menu1, MenuAction action, int client, int param)
@@ -1780,9 +1812,11 @@ public int DoMenuEnqueteFinal(Menu menu1, MenuAction action, int client, int par
 	}
 	else if (action == MenuAction_End)
 		delete menu1;
+		
+	return 0;
 }
 
-Menu MenuAvisRecherche(int client)
+void MenuAvisRecherche(int client)
 {
 	rp_SetClientBool(client, b_DisplayHud, false);
 	Menu menu = new Menu(DoMenuRecherche);
@@ -1872,6 +1906,8 @@ public int DoMenuRecherche(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public int DoMenuAvisRecherche(Menu menu1, MenuAction action, int client, int param)
@@ -1911,6 +1947,8 @@ public int DoMenuAvisRecherche(Menu menu1, MenuAction action, int client, int pa
 	}
 	else if (action == MenuAction_End)
 		delete menu1;
+		
+	return 0;
 }
 
 public Action UnAvisRecherche(Handle timer, any client)
@@ -1935,6 +1973,8 @@ public Action UnAvisRecherche(Handle timer, any client)
 			}
 		}
 	}
+	
+	return Plugin_Handled;
 }
 
 public int DoMenuAfficherRecherche(Menu menu2, MenuAction action, int client, int param)
@@ -1977,6 +2017,8 @@ public int DoMenuAfficherRecherche(Menu menu2, MenuAction action, int client, in
 	}
 	else if (action == MenuAction_End)
 		delete menu2;
+		
+	return 0;
 }
 
 public int DoMenuModifierRecherche(Menu menu, MenuAction action, int client, int param)
@@ -2042,9 +2084,11 @@ public int DoMenuModifierRecherche(Menu menu, MenuAction action, int client, int
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
-Menu MenuPerquisition(int client)
+void MenuPerquisition(int client)
 {
 	rp_SetClientBool(client, b_DisplayHud, false);
 	Menu menu = new Menu(DoMenuPerquisition);
@@ -2055,11 +2099,8 @@ Menu MenuPerquisition(int client)
 	{
 		Format(STRING(strIndex), "%i", i);
 		rp_GetJobName(i, STRING(jobname));
-		
-		if (rp_CanPerquisition(i))
-			menu.AddItem(strIndex, jobname);
-		else 
-			menu.AddItem("", jobname, ITEMDRAW_DISABLED);	
+	
+		menu.AddItem("", jobname, ITEMDRAW_DISABLED);	
 	}		
 	menu.ExitBackButton = true;
 	menu.ExitButton = true;
@@ -2096,6 +2137,8 @@ public int DoMenuPerquisition(Menu menu, MenuAction action, int client, int para
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public int DoMenuAttente(Menu menu, MenuAction action, int client, int param)
@@ -2106,6 +2149,8 @@ public int DoMenuAttente(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public Action CheckCanPerqui(Handle timer, DataPack pack)
@@ -2174,7 +2219,7 @@ public Action CheckCanPerqui(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-Menu MenuModifierParamPolice(int client, bool type, char[] id)
+void MenuModifierParamPolice(int client, bool type, char[] id)
 {
 	rp_SetClientBool(client, b_DisplayHud, false);
 	Menu menu = new Menu(Handle_MenuModifierParamPolice);
@@ -2327,6 +2372,8 @@ public int Handle_MenuModifierParamPolice(Menu menu, MenuAction action, int clie
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 /***************************************************************************************
@@ -2426,7 +2473,9 @@ public Action Command_Garage(int client, int args)
 			menu.Display(client, MENU_TIME_FOREVER);
 		}
 	}
-}		
+	
+	return Plugin_Handled;
+}
 
 bool Zone_Garage(int ent)
 {
@@ -2477,6 +2526,8 @@ public int Handle_Garage(Menu menu, MenuAction action, int client, int param)
 	}
 	else if(action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public void RP_OnClientBuild(Menu menu, int client)
@@ -2490,7 +2541,7 @@ public void RP_OnClientBuild(Menu menu, int client)
 	}	
 }	
 
-public int RP_OnClientBuildHandle(int client, const char[] info)
+public void RP_OnClientBuildHandle(int client, const char[] info)
 {
 	rp_SetClientBool(client, b_DisplayHud, true);
 	int prop;
@@ -2567,15 +2618,15 @@ public int RP_OnClientBuildHandle(int client, const char[] info)
 		Entity_SetName(prop, "PROP_POLICE");
 }
 
-public Action RP_OnClientFire(int client, int target, const char[] weapon)
+public void RP_OnClientFire(int client, int target, const char[] weapon)
 {
 	if(rp_GetClientBool(client, b_IsTased))
-		return Plugin_Handled;
-		
-	return Plugin_Continue;
+		return;
 }
 
 public Action RP_OnJailTimeFinish(int client)
 {
 	SQL_Request(g_DB, "DELETE FROM `rp_jails` WHERE `steamid` = '%s'", steamID[client]);
+	
+	return Plugin_Handled;
 }

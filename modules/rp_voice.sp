@@ -161,4 +161,6 @@ public bool IsInZonesMute(int client)
 	{
 		
 	}
+	
+	return false;
 }

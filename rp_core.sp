@@ -3953,7 +3953,7 @@ public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 						int b = GetRandomInt(50, 255);
 			
 						SetEntityRenderColor(victim, r, g, b);
-						CreateTimer(7.0, ResetClientColor, victim);
+						CreateTimer(7.0, Timer_ResetClientColor, victim);
 						damage *= 1.0;
 						return Plugin_Changed;
 					}	

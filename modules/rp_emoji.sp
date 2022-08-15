@@ -50,7 +50,7 @@ public void OnPluginStart()
 	
 }
 
-public Action RP_OnClientSay(int client, const char[] arg)
+public void RP_OnClientSay(int client, const char[] arg)
 {
 	if(StrEqual(arg, "love") || StrEqual(arg, "Love"))
 		CreateEmoji(client, "emoji_heart");

@@ -128,7 +128,7 @@ public void OnMapStart()
 	//SQL_LoadNPC();
 }
 
-public Action RP_OnRoundStart()
+public void RP_OnRoundStart()
 {
 	SQL_LoadNPC();
 }
@@ -147,12 +147,16 @@ public APLRes AskPluginLoad2(Handle plugin, bool late, char[] error, int err_max
 	
 	CreateNative("rp_LoadNPC", Native_LoadPermaProps);
 	CreateNative("rp_GetNPCType", Native_GetNPCType);
+	
+	return APLRes_Success;
 }
 
 public int Native_LoadPermaProps(Handle plugin, int numParams) 
 {
 	g_iNpcId = 0;
 	SQL_LoadNPC();
+	
+	return 0;
 }
 
 public int Native_GetNPCType(Handle plugin, int numParams) 
@@ -255,6 +259,8 @@ public int Handle_MenuEdit(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public void Menu_Position(int client) 
@@ -369,6 +375,8 @@ public int Handle_Position(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public void Menu_Angles(int client) 
@@ -396,7 +404,7 @@ public int Handle_Angles(Menu menu, MenuAction action, int client, int param)
 		float angles[3];
 		char npcUniqueId[128];
 		if (g_eNpcEdit[client].nNpcId == -1)
-			return;
+			return -1;
 		GetEntPropString(g_eNpcEdit[client].nNpcId, Prop_Data, "m_iName", STRING(npcUniqueId));
 		
 		if (StrEqual(info, "plus")) 
@@ -448,6 +456,8 @@ public int Handle_Angles(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public void Menu_Property(int client) 
@@ -487,9 +497,11 @@ public int Handle_Property(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
-Menu Menu_Type(int client) 
+void Menu_Type(int client) 
 {
 	rp_SetClientBool(client, b_DisplayHud, false);
 	Menu menu = new Menu(Handle_MenuType);
@@ -532,6 +544,8 @@ public int Handle_MenuType(Menu menu, MenuAction action, int client, int param)
 	}
 	else if (action == MenuAction_End)
 		delete menu;
+		
+	return 0;
 }
 
 public Action Command_SpawnNpc(int client, int args) 
@@ -564,7 +578,7 @@ public Action Command_SpawnNpc(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action RP_OnClientInteract(int client, int target, const char[] class, const char[] model, const char[] name)
+public void RP_OnClientInteract(int client, int target, const char[] class, const char[] model, const char[] name)
 {
 	char sTmp[128];
 	GetEntPropString(target, Prop_Data, "m_iName", STRING(sTmp));
@@ -585,7 +599,7 @@ stock int GetTargetBlock(int client)
 	return -1;
 }
 
-public Action RP_OnClientSay(int client, const char[] arg)
+public void RP_OnClientSay(int client, const char[] arg)
 {
 	if (g_eNpcEdit[client].nWaitingForModelName && StrContains(arg, "abort", false) == -1) 
 	{
@@ -599,7 +613,7 @@ public Action RP_OnClientSay(int client, const char[] arg)
 		GetEntPropString(g_eNpcEdit[client].nNpcId, Prop_Data, "m_iName", STRING(npcUniqueId));
 		SQL_Request(g_DB, "UPDATE `rp_entity_permanent` SET `model` = '%s' WHERE `uniqueId` = '%s'", arg, npcUniqueId);
 		
-		return Plugin_Handled;
+		return;
 	} 
 	else if (g_eNpcEdit[client].nWaitingForIdleAnimationName && StrContains(arg, "abort", false) == -1) 
 	{
@@ -614,7 +628,7 @@ public Action RP_OnClientSay(int client, const char[] arg)
 		GetEntPropString(g_eNpcEdit[client].nNpcId, Prop_Data, "m_iName", STRING(npcUniqueId));
 		SQL_Request(g_DB, "UPDATE `rp_entity_permanent` SET `idle_animation` = '%s' WHERE `uniqueId` = '%s'", arg, npcUniqueId);
 		
-		return Plugin_Handled;
+		return;
 	} 
 	else if (g_eNpcEdit[client].nWaitingForName && StrContains(arg, "abort", false) == -1) 
 	{
@@ -629,7 +643,7 @@ public Action RP_OnClientSay(int client, const char[] arg)
 		SQL_Request(g_DB, "UPDATE `rp_entity_permanent` SET `name` = '%s' WHERE `uniqueId` = '%s'", arg, npcUniqueId);
 		
 		strcopy(g_iNpcList[g_iNpcId].gName, 128, arg);
-		return Plugin_Handled;
+		return;
 	} 
 	else if ((g_eNpcEdit[client].nWaitingForModelName || g_eNpcEdit[client].nWaitingForIdleAnimationName || g_eNpcEdit[client].nWaitingForName) && StrContains(arg, "abort", false) != -1) 
 	{
@@ -637,11 +651,11 @@ public Action RP_OnClientSay(int client, const char[] arg)
 		g_eNpcEdit[client].nWaitingForIdleAnimationName = false;
 		g_eNpcEdit[client].nWaitingForName = false;
 		PrintToChat(client, "Aborted.");
-		return Plugin_Handled;
+		return;
 	}
 	
 	
-	return Plugin_Continue;
+	return;
 }
 
 public float GetClientDistanceToGround(int client) 
@@ -788,10 +802,12 @@ public Action setIdleAnimation(Handle Timer, int entRef)
 	int ent = EntRefToEntIndex(entRef);
 	int id;
 	if ((id = getNpcLoadedIdFromRef(entRef)) == -1)
-		return;
+		return Plugin_Handled;
 	SetVariantString(g_iNpcList[id].gIdleAnimation);
 	AcceptEntityInput(ent, "SetAnimation");
 	g_iNpcList[id].gInAnimation = false;
+	
+	return Plugin_Handled;
 }
 
 stock int getNpcLoadedIdFromUniqueId(char uniqueId[128]) 

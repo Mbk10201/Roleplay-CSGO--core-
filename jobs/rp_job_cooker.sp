@@ -493,7 +493,7 @@ public void RP_OnClientDeath(int attacker, int victim, const char[] weapon, bool
 public void RP_ClientTimerEverySecond(int client)
 {
 	if(!IsClientValid(client))
-	if(!rp_GetClientBool(client, b_IsAfk) && GetClientVehicle(client) == -1)
+	if(!rp_GetClientBool(client, b_IsAfk) && Vehicles_GetClientVehicleEntity(client) == -1)
 	{
 		int type = GetRandomInt(1, 2); 
 	

@@ -2407,3 +2407,10 @@ stock void GetEntityOrigin(int entity, float origin[3])
 {
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
 }
+
+stock void LoadSalaire(int client)
+{
+	int job = rp_GetClientInt(client, i_Job);
+	int grade = rp_GetClientInt(client, i_Grade);
+	rp_SetClientInt(client, i_Salary, rp_GetGradeSalary(job, grade));
+}

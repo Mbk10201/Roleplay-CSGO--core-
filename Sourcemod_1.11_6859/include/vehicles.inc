@@ -17,7 +17,6 @@
 // Prefixes.
 #define VEHICLES_PREFIX_MENU "[Vehicles]"
 #define VEHICLES_PREFIX " \x04" ... VEHICLES_PREFIX_MENU ... "\x01"
-
 // Default horn sound.
 #define VEHICLE_HORN_SOUND "vehicles/horn_standard.mp3"
 
